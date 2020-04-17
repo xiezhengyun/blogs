@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>盒子模型</title>
+    <meta charset="utf-8">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            /* 去除浏览器默认边距 */
+        }
+        .box{
+            width: 100px;
+            height: 100px;
+            padding: 10px; /* 内边距 */
+            margin: 10px;  /*外边距 */
+            border: 1px solid #000;
+            font-size: 16px;
+        }
+        .box1{
+            box-sizing: content-box; /* 默认的 */
+        }
+        .box2{
+           box-sizing: border-box;
+           margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box box1">box1</div>
+    <div class="box box2">box2</div>
+   
+</body>
+
+</html>
