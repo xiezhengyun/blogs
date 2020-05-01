@@ -14,4 +14,5 @@
 + [http报文](https://github.com/xiezhengyun/learnWeb/blob/master/articles/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/http%E6%8A%A5%E6%96%87.md)
 + [http实体数据](https://github.com/xiezhengyun/learnWeb/blob/master/articles/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/http%E5%AE%9E%E4%BD%93%E6%95%B0%E6%8D%AE.md)
 + [http传输大文件](https://github.com/xiezhengyun/learnWeb/blob/master/articles/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/http%E4%BC%A0%E8%BE%93%E5%A4%A7%E6%96%87%E4%BB%B6.md)
++ [HTTP的连接管理]()
 
