@@ -7,7 +7,7 @@
 4. TLS握手。
 5. 秘文发送报文
 
-### TSL协议组成
+### TLS协议组成
 + **记录协议(Record Protocol)** 规定了TLS收发数据的基本单位:记录(record)。
 + **警报协议(Alert Protocol)** 职责是向对方发出警报信息，有点像是HTTP协议里的状态码。
 + **握手协议(Handshake Protocol)** 浏览器和服务 器会在握手过程中协商TLS版本号、随机数、密码套件等信息，然后交换证书和密钥参数，最终双方协商得 到会话密钥，用于后续的混合加密系统。
@@ -49,7 +49,7 @@
 1. 客户端发一个“Change Cipher Spec”，然后再发一个“Finished”消息，把之前所有发送的数据做个摘要，再加密一下，让服务器做个验证。
 2. 服务器发“Change Cipher Spec”和“Finished”消息，双方都验证加密解密OK，握手正式结束，后面就收发被加密的HTTP请求和响应了。
 
-![https_tsl——详细](../../Images/http/https_tsl链接.png)
+![https_tls——详细](../../Images/http/https_tsl链接.png)
 
 
 ### RSA握手过程

@@ -1,4 +1,4 @@
-## HTTPS_TSL1.3 
+## HTTPS_TLS1.3 
 1.3相比1.2做了优化。关键在于删除不安全的算法和提升性能。
 + 精简算法
 + 通过扩展协议（Extension Protocol）的 **supported_groups** 简化 流程
