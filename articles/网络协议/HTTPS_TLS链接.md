@@ -58,3 +58,4 @@
 2. 因为使用了ECDHE，客户端可以不用等到服务器发回“Finished”确认握手完毕，立即就发出HTTP报文，省去了一个消息往返的时间浪费。这个叫“TLS False Start”，意思就是“抢跑”，和“TCP Fast Open”有点像，都是不等连接完全建立就提前发应用数据，提高传输的效率。
 
 ![](../../Images/http/https_TSL_RSA.png)
+
