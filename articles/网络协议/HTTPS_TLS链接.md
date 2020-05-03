@@ -13,7 +13,7 @@
 + **握手协议(Handshake Protocol)** 浏览器和服务 器会在握手过程中协商TLS版本号、随机数、密码套件等信息，然后交换证书和密钥参数，最终双方协商得 到会话密钥，用于后续的混合加密系统。
 + **变更密码规范协议(Change Cipher Spec Protocol)** 一个“通知”，告诉对 方，后续的数据都将使用加密保护。那么反过来，在它之前，数据都是明文的。
 
-### TSL握手过程
+### ECDHE握手过程
 原理就是混合加密。用三个随机数**Client Random**、**Server Random**和**Pre-Master**，生成密钥 **Master Secret** 。
 ![https_tsl_流程](../../Images/http/https_tsl_m.png)
 下面看下具体过程，关键在于随机数**Pre-Master**的生成和交换。
@@ -52,3 +52,9 @@
 ![https_tsl——详细](../../Images/http/https_tsl链接.png)
 
 
+### RSA握手过程
+刚才说的其实是如今主流的TLS握手过程，这与传统的握手有两点不同。
+1. 使用ECDHE实现密钥交换，而不是RSA，所以会在服务器端发出“Server Key Exchange”消息。
+2. 因为使用了ECDHE，客户端可以不用等到服务器发回“Finished”确认握手完毕，立即就发出HTTP报文，省去了一个消息往返的时间浪费。这个叫“TLS False Start”，意思就是“抢跑”，和“TCP Fast Open”有点像，都是不等连接完全建立就提前发应用数据，提高传输的效率。
+
+![](../../Images/http/https_TSL_RSA.png)
