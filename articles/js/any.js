@@ -9,7 +9,7 @@ Promise.any2 = (promises) => {
     let flag = false;
     let errArr = [];
     promises = Array.from(promises);
-    if (promises.length == 0) return new Promise((resolve, reject) => { reject('promises.length == 0') })
+    if (promises.length == 0) return  Promise.reject('promises.length == 0')
     return new Promise(function (resolve, reject) {
         for (let i = 0; i < promises.length; i++) {
             Promise.resolve(promises[i]).then(
