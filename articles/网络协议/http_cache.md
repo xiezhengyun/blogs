@@ -20,3 +20,8 @@
 ##### 验证资源是否被修改
 验证资源是否被修改的条件有两个:``Last-modified``和``ETag``，需要服务器预先在响应报文里设
 置，搭配条件请求使用;
+
+
+![](../../Images/http/http_cache2.jpg)
+
+[好文](https://mp.weixin.qq.com/s/z_iKW6LYtAXEy60bPmCKcQ)
