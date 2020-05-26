@@ -95,6 +95,20 @@ register (path, rawModule, runtime = true) {
 4. 通过这个register函数，生成module树状结构。
 
 #### installModule
+```js
+// getters and state object must be gotten lazily
+  // because they will be changed by vm update
+  Object.defineProperties(local, {
+    getters: {
+      get: noNamespace
+        ? () => store.getters
+        : () => makeLocalGetters(store, namespace)
+    },
+    state: {
+      get: () => getNestedState(store.state, path)
+    }
+  })
+```
 + 递归modules，把对应的``mutations``,``actions``等。添加到store对应的_属性名下。
 + 在store上生成所有你需要的属性，方法。因为有可是多个module，所以会根据你定义的key来重命名``key/``.
 + 有一个``makeLocalContext``，方法来拿到local。这样你在各自的module调用``mutations``,``actions``的时候。只需要写各自modules里的名字。
