@@ -94,5 +94,5 @@ function normalizeNamespace (fn) {
 ```
 + 先看mapState是 normalizeNamespace的返回值。就是我们调用mapState的时候，传入参数namespace, map。
 + normalizeMap 构造key:value数据返回
-+ mapState一般解构在contented里，在外面调用这个计算属性时，执行mappedState方法。
++ mapState一般解构在computed里，在外面调用这个计算属性时，执行mappedState方法。
 
