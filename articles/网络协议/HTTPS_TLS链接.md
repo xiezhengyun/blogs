@@ -59,3 +59,6 @@
 
 ![](../../Images/http/https_TSL_RSA.png)
 
+### SSL/TLS握手时的私钥用途（RSA、ECDHE）
+
+![](../../Images/http/rsa和ecdhe.png)
