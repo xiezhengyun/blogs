@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Cache-Control" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta http-equiv="x-dns-prefetch-control" content="on" />
+  <meta name="description" content="CSS3 resize 拖拽" />
+  <meta name="keywords" content="CSS3 resize 拖拽" />
+  <meta name="author" content="Xzavier" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+  <title>CSS3-resize拖拽</title>
+  <style type="text/css">
+    body {
+      margin: 0;
+    }
+
+    h3 {
+      padding: 20px 0 0 20px;
+      margin: 0;
+    }
+
+    .fl {
+      float: left;
+    }
+
+    .resize-box {
+      overflow: hidden;
+      background: #f5f5f5;
+    }
+
+    .resize-box-left {
+      height: 340px;
+      position: relative;
+    }
+
+    .resize-box-vertical {
+      position: relative;
+    }
+
+    .l-container {
+      background: #fff;
+      height: 100%;
+      width: 100%;
+    }
+
+    .resize-box-right {
+      height: 300px;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .r-container {
+      background: #fff;
+      height: 100%;
+      width: 100%;
+    }
+
+    .resize-real-box {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      bottom: 20px;
+      right: 20px;
+      overflow-x: hidden;
+    }
+
+    .textarea-box {
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .textarea-box textarea {
+      max-width: 200px;
+      max-height: 200px;
+    }
+
+    .resize-bar {
+      width: 100%;
+      height: inherit;
+      opacity: 0;
+      overflow: scroll;
+
+      min-width: 200px;
+      max-width: 800px;
+    }
+    /* 
+      both: 可调整盒子的横向宽度和纵向高度
+      horizontal: 可调整盒子的横向宽度,
+      vertical: 可调整盒子纵向高度
+    */
+
+    .horizontal {
+      resize: horizontal;
+      cursor: col-resize;
+    }
+
+    .horizontal:hover~.dividing-line-horizontal,
+    .horizontal:active~.dividing-line-horizontal {
+      border-left: 1px dashed skyblue;
+    }
+
+    .horizontal::-webkit-scrollbar {
+      width: 20px;
+      height: inherit;
+    }
+
+    .dividing-line-horizontal {
+      position: absolute;
+      right: 0;
+      top: 20px;
+      bottom: 20px;
+      border-left: 1px solid #ddd;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>resize: horizontal</h3>
+  <div class="resize-box" style="margin-top: 20px;">
+    <div class="resize-box-left fl">
+      <!-- 拖拽 -->
+      <div class="resize-bar horizontal"></div>
+      <!-- 线 -->
+      <div class="dividing-line-horizontal"></div>
+
+      <!-- <div class="resize-real-box">
+        <div class="l-container">resize-box-left</div>
+      </div> -->
+    </div>
+    <div class="resize-box-right">
+      <div class="r-container">
+        <div class="textarea-box">
+          resize-box-right
+          <textarea></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
