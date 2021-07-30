@@ -5,6 +5,7 @@
  *     this.next = (next===undefined ? null : next)
  * }
  */
+// 移除链表元素  https://leetcode-cn.com/problems/remove-linked-list-elements/submissions/
 /**
  * @param {ListNode} head
  * @param {number} val
@@ -41,4 +42,12 @@ var removeElements = function (head, val) {
     }
   }
   return dummyHead.next;
+};
+
+// 递归
+var removeElements = function (head, val) {
+  if (head == null) return head;
+  console.log(head);
+  head.next = removeElements(head.next, val);
+  return head.val === val ? head.next : head;
 };
