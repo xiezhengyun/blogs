@@ -1,3 +1,4 @@
+```js
 /**
  * Definition for singly-linked list.
  * function ListNode(val, next) {
@@ -50,3 +51,26 @@ var reverseBetween = function (head, left, right) {
 
   return dh.next;
 };
+
+// 在需要反转的区间里，每遍历到一个节点，让这个新节点来到反转部分的起始位置
+var reverseBetween = function (head, left, right) {
+  // 虚拟节点
+  var dh = new ListNode(0);
+  dh.next = head;
+  let pre = dh;
+  // 找出 pre cur;
+  for (let i = 0; i < left - 1; i++) {
+    pre = pre.next;
+  }
+
+  let cur = pre.next;
+  for (let i = 0; i < right - left; i++) {
+    const next = cur.next;
+    cur.next = next.next;
+    next.next = pre.next;
+    pre.next = next;
+  }
+  return dh.next;
+};
+```
+![](../../../../Images/算法/反正链表2.png)
