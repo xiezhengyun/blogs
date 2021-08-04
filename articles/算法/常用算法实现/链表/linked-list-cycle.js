@@ -2,6 +2,8 @@
  * https://leetcode-cn.com/problems/linked-list-cycle/submissions/
  * 141 判断链表是否有环
  * 快慢指针
+ * 总结快慢指针的特性 —— 每轮移动之后两者的距离会加一。
+ * 当在换里第二次相遇时候, 第一次和第二次的移动间隔就是环的长度
  */
 /**
  * Definition for singly-linked list.
