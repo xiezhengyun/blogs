@@ -13,15 +13,15 @@
  * @param {TreeNode} root
  * @return {number}
  */
-// dfs 深度优先搜索
+// dfs 深度优先搜索 递归
 var maxDepth = function (root) {
   if (!root) return 0;
   return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
 };
 
-// 用栈
+// 用栈 迭代dfs遍历二叉树
 var maxDepth = function (root) {
-  // 2. 模拟函数调用栈 stack 携带上层深度
+  // 模拟函数调用栈 stack 携带上层深度
   if (!root) return 0;
 
   let max = 0;
@@ -32,11 +32,28 @@ var maxDepth = function (root) {
 
     max = Math.max(max, p + 1);
     console.log(max);
-    
+
     node.left && stack.push([node.left, p + 1]);
     node.right && stack.push([node.right, p + 1]);
     console.log(stack);
   }
 
+  return max;
+};
+
+// 迭代bfs
+var maxDepth = function (root) {
+  if (!root) return 0;
+  var queue = [root];
+  var max = 0;
+  while (queue.length) {
+    var len = queue.length;
+    for (var i = 0; i < len; i++) {
+      var node = queue.shift();
+      node.left && queue.push(node.left);
+      node.right && queue.push(node.right);
+    }
+    max++;
+  }
   return max;
 };
