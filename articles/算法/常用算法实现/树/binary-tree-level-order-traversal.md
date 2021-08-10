@@ -2,6 +2,7 @@
 
 https://leetcode-cn.com/problems/binary-tree-level-order-traversal/
 
+BFS两个主要场景：「层序遍历」、「最短路径」。
 ```
 示例：
 二叉树：[3,9,20,null,null,15,7],
