@@ -8,6 +8,11 @@
  *     this.val = val;
  *     this.left = this.right = null;
  * }
+ *   4
+   /   \
+  2     7
+ / \   / \
+1   3 6   9
  */
 /**
  * @param {TreeNode} root
