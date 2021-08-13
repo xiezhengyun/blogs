@@ -13,7 +13,7 @@ var swap = function (nums, i, j) {
 // 快速排序
 var sortColors = function (nums) {
   // [0, p1) 0
-  // [p1, p2) 1
+  // [p1, i) 1
   // [p2, len-1] 2
 
   // 循环终止条件是 i == p2，那么循环可以继续的条件是 i < p2
