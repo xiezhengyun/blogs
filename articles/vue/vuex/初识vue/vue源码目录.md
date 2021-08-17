@@ -1,0 +1,155 @@
+# vue 源码目录
+
+```
+src
+├── compiler        # 编译相关
+├── core            # 核心代码
+├── platforms       # 不同平台的支持
+├── server          # 服务端渲染
+├── sfc             # .vue 文件解析
+├── shared          # 共享代码
+```
+
+## compiler 编译相关
+
+compiler 目录包含 vue 所有编译相关的代码。主要有**模板解析成 ast 语法树**，**ast 语法树优化**，**代码生成**等功能。
+编译的工作可以在构建时候做，此时可以借助打包工具 webpack，以及**vue-loader**。  
+也可以在运行时做，但是 runtime 编译更耗性能，推荐---离线编译
+
+## core 核心代码
+
+core 目录包含了 Vue.js 的核心代码，包括内置组件、全局 API 封装，Vue 实例化、观察者、虚拟 DOM、工具函数等等。
+
+## platforms 不同平台的支持
+
+vue 跨平台，支持 web 以及 也可以配合 weex 跑在 native 客户端上。  
+platform 是 Vue.js 的入口，2 个目录代表 2 个主要入口，分别打包成运行在 web 上和 weex 上的 Vue.js。
+
+## server 服务端渲染
+
+## sfc .vue 文件解析
+
+通常我们开发 Vue.js 都会借助 webpack 构建， 然后通过 .vue 单文件来编写组件。  
+这个目录下的代码类似一个**解释器**，会把 .vue 文件内容解析成一个 JavaScript 的对象。
+
+## shared
+
+shared 里定义的工具方法都是会被浏览器端的 Vue.js 和服务端的 Vue.js 所共享
+
+# vue 源码构建
+
+Vue.js 源码是基于 Rollup 构建的，它的构建相关配置都在 scripts 目录下。
+
+可以看到，在 `package.json` 里，关于打包的命令有很多，暂时关注 build 命令。就喝普通的项目打包一样，运行`npm run build` 命令会执行 scripts 下的 build.js 文件。
+
+```json
+//package.json
+{
+  "script": {
+    "build": "node scripts/build.js",
+    "build:ssr": "npm run build -- web-runtime-cjs,web-server-renderer",
+    "build:weex": "npm run build -- weex"
+  }
+}
+```
+
+在`scripts/build.js`里，首先会引入一些依赖，然后读取配置文件，然后通过执行的命令行参数对构建配置做过滤。这样就可以构建出不同用途的 Vue.js
+
+```js
+// scripts/build.js
+// 配置文件读取配置，再通过命令行参数对构建配置做过滤
+let builds = require('./config').getAllBuilds();
+
+// filter builds via command line arg
+console.log(`-----------`);
+console.log(process.argv); // npm run build -- 后面的参数，见上面的build命令
+console.log(`-----------`);
+if (process.argv[2]) {
+  const filters = process.argv[2].split(',');
+  builds = builds.filter(b => {
+    return filters.some(f => b.output.file.indexOf(f) > -1 || b._name.indexOf(f) > -1);
+  });
+} else {
+  // filter out weex builds by default
+  builds = builds.filter(b => {
+    return b.output.file.indexOf('weex') === -1;
+  });
+}
+
+build(builds);
+```
+
+在 `scripts/config.js` 中，通过 `alias` 配置好入口文件地址。
+
+```js
+const aliases = require('./alias');
+const resolve = p => {
+  const base = p.split('/')[0];
+  if (aliases[base]) {
+    return path.resolve(aliases[base], p.slice(base.length + 1));
+  } else {
+    return path.resolve(__dirname, '../', p);
+  }
+};
+// 下面是节选的配置
+const builds = {
+  // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
+  'web-runtime-cjs-dev': {
+    entry: resolve('web/entry-runtime.js'), //属性表示构建的入口 JS 文件地址
+    dest: resolve('dist/vue.runtime.common.dev.js'), //表示构建后的 JS 文件地址
+    format: 'cjs', //表示构建的格式 cjs: 构建出来的文件遵循 CommonJS 规范, es: 构建出来的文件遵循 ES Module 规范, umd: 构建出来的文件遵循 UMD 规范。
+    env: 'development',
+    banner,
+  },
+  'web-runtime-cjs-prod': {
+    entry: resolve('web/entry-runtime.js'),
+    dest: resolve('dist/vue.runtime.common.prod.js'),
+    format: 'cjs',
+    env: 'production',
+    banner,
+  },
+};
+
+// alias.js
+const resolve = p => path.resolve(__dirname, '../', p);
+
+module.exports = {
+  vue: resolve('src/platforms/web/entry-runtime-with-compiler'),
+  compiler: resolve('src/compiler'),
+  core: resolve('src/core'),
+  shared: resolve('src/shared'),
+  web: resolve('src/platforms/web'),
+  weex: resolve('src/platforms/weex'),
+  server: resolve('src/server'),
+  entries: resolve('src/entries'),
+  sfc: resolve('src/sfc'),
+};
+```
+
+以`web-runtime-cjs-prod`为例，`web/entry-runtime.js`的真实路径是 `src/platforms/web/entry-runtime.js` 。  
+它经过 Rollup 的构建打包后，最终会在 dist 目录下生成 `vue.runtime.common.prod.js`。
+
+## Runtime Only VS Runtime + Compiler
+
+- Runtime Only  
+  我们在使用 Runtime Only 版本的 Vue.js 的时候，通常需要借助如 webpack 的 vue-loader 工具把 .vue 文件编译成 JavaScript，因为是在编译阶段做的，所以它只包含运行时的 Vue.js 代码，因此代码体积也会更轻量。
+- Runtime + Compiler  
+  我们如果没有对代码做预编译，但又使用了 Vue 的 template 属性并传入一个字符串，则需要在客户端编译模板。
+
+```js
+// 需要编译器的版本
+new Vue({
+  template: '<div>{{ hi }}</div>',
+});
+
+// 这种情况不需要
+new Vue({
+  render(h) {
+    return h('div', this.hi);
+  },
+});
+```
+
+因为在 Vue.js 2.0 中，最终渲染都是通过 render 函数，如果写 template 属性，则需要编译成 render 函数，那么这个编译过程会发生运行时，所以需要带有编译器的版本。   
+
+这个编译过程对性能会有一定损耗，所以通常我们更推荐使用 Runtime-Only 的 Vue.js。
