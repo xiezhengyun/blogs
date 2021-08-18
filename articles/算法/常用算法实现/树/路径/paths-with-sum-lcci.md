@@ -63,7 +63,7 @@ var pathSum = function (root, sum) {
 前序递归，记录路径和路径数组，遍历当前路径，判断路径上是否存在满足路径和为 sum 的路径，存在则结果 +1,递归完毕当前节点后，记得把路径数组和路径和还原（回溯）
 
 437. 路径总和 III, 同样可使用下面这种解法
-https://leetcode-cn.com/problems/path-sum-iii/submissions/
+     https://leetcode-cn.com/problems/path-sum-iii/submissions/
 
 ```js
 var pathSum = function (root, sum) {
@@ -97,5 +97,30 @@ var pathSum = function (root, sum) {
   };
   dfs(root);
   return result;
+};
+```
+
+BFS 解法
+
+```js
+var pathSum = function (root, targetSum) {
+  if (!root) return 0;
+  let cnt = 0;
+  let queue = [{ node: root, sum: [0] }];
+  while (queue.length) {
+    for (let i = 0; i < queue.length; i++) {
+      const { node, sum } = queue.shift();
+      const newSum = sum.map(v => {
+        v += node.val;
+        if (v === targetSum) cnt++;
+        return v;
+      });
+      newSum.push(0);
+      console.log(newSum);
+      if (node.left) queue.push({ node: node.left, sum: newSum });
+      if (node.right) queue.push({ node: node.right, sum: newSum });
+    }
+  }
+  return cnt;
 };
 ```
