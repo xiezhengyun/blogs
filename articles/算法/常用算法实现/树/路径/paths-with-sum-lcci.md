@@ -62,6 +62,9 @@ var pathSum = function (root, sum) {
 
 前序递归，记录路径和路径数组，遍历当前路径，判断路径上是否存在满足路径和为 sum 的路径，存在则结果 +1,递归完毕当前节点后，记得把路径数组和路径和还原（回溯）
 
+437. 路径总和 III, 同样可使用下面这种解法
+https://leetcode-cn.com/problems/path-sum-iii/submissions/
+
 ```js
 var pathSum = function (root, sum) {
   if (root === null) {
