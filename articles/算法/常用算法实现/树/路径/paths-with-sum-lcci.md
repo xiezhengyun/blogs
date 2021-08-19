@@ -62,8 +62,13 @@ var pathSum = function (root, sum) {
 
 前序递归，记录路径和路径数组，遍历当前路径，判断路径上是否存在满足路径和为 sum 的路径，存在则结果 +1,递归完毕当前节点后，记得把路径数组和路径和还原（回溯）
 
-437. 路径总和 III, 同样可使用下面这种解法
-     https://leetcode-cn.com/problems/path-sum-iii/submissions/
+437. 路径总和 III, 同样可使用下面这种解法    
+
+给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目。
+
+路径 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。
+
+    https://leetcode-cn.com/problems/path-sum-iii/submissions/
 
 ```js
 var pathSum = function (root, sum) {
