@@ -42,4 +42,29 @@ var pathSum = function (root, targetSum) {
   dfs(root, targetSum - root.val);
   return res;
 };
+
+
+
+var pathSum = function (root, target) {
+  if (!root) return [];
+  var res = [];
+  var path = [];
+  var dfs = function (node, sum) {
+    path.push(node.val);
+    sum -= node.val;
+    if (!node.left && !node.right && sum == 0) {
+      res.push([...path]);
+    }
+    if (node.left) {
+      dfs(node.left, sum);
+      path.pop();
+    }
+    if (node.right) {
+      dfs(node.right, sum);
+      path.pop();
+    }
+  };
+  dfs(root, target);
+  return res;
+};
 ```
