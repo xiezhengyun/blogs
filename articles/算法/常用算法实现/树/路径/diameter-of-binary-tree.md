@@ -35,6 +35,7 @@ var diameterOfBinaryTree = function (root) {
     if (!node) return 0;
     var L = dfs(node.left);
     var R = dfs(node.right);
+    // 找出每一个节点的 左子树最大深度 + 右子树最大深度 的值，然后不断更新全局变量 res 即可
     res = Math.max(L + R, res);
     return Math.max(L, R) + 1;
   };
