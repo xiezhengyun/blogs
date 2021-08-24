@@ -16,6 +16,7 @@ https://leetcode-cn.com/problems/diameter-of-binary-tree/
 
 返回  3, 它的长度是路径 [4,2,1,3] 或者  [5,2,1,3]。
 
+![](https://pic.leetcode-cn.com/1621740243-LSOaVf-src=http___images.xiaozhuanlan.com_photo_2019_aac0e1692d3c9810c6f4a91863598320.gif&refer=http___images.xiaozhuanlan.gif)
 ```js
 /**
  * Definition for a binary tree node.
