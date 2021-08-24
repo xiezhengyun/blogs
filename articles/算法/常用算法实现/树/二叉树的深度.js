@@ -20,8 +20,11 @@
  */
 // dfs 深度优先搜索 递归
 var maxDepth = function (root) {
-  if (!root) return 0;
-  return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+  if (!root) return 0
+  var L = maxDepth(root.left);
+  var R = maxDepth(root.right)
+  var res = Math.max(L, R) + 1
+  return res
 };
 
 // 用栈 迭代dfs遍历二叉树
