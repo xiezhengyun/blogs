@@ -24,7 +24,7 @@ renderMixin(Vue);
 
 export default Vue;
 ```
-
+## initMixin(Vue)
 `new Vue()` 的时候回执行`this._init(options)`，这个函数是在`initMixin`里定义的。主要做的事
 
 - uid++
@@ -133,3 +133,94 @@ export function proxy (target: Object, sourceKey: string, key: string) {
   Object.defineProperty(target, key, sharedPropertyDefinition)
 }
 ```
+## stateMixin(Vue) 
+同样的 `stateMixin(Vue)`,  在 state，可以看到这个方法的定义：这里可以看出，`$data` 属性实际上代理的是 `_data` 这个实例属性，而 `$props` 代理的是 `_props` 这个实例属性。  
+此时还根据环境限制了是否是只读。
+
+```js
+const dataDef = {}
+  dataDef.get = function () { return this._data }
+  const propsDef = {}
+  propsDef.get = function () { return this._props }
+  if (process.env.NODE_ENV !== 'production') {
+    dataDef.set = function () { //只读属性
+      warn(
+        'Avoid replacing instance root $data. ' +
+        'Use nested data properties instead.',
+        this
+      )
+    }
+    propsDef.set = function () {
+      warn(`$props is readonly.`, this)
+    }
+  }
+  Object.defineProperty(Vue.prototype, '$data', dataDef)
+  Object.defineProperty(Vue.prototype, '$props', propsDef)
+
+  // 这里还挂在口上了这三个方法
+  Vue.prototype.$set = set
+  Vue.prototype.$delete = del
+
+  Vue.prototype.$watch = function (
+    expOrFn: string | Function,
+    cb: any,
+    options?: Object
+  ): Function {
+    //...
+  }
+```
+
+## eventsMixin(Vue)
+在 `events.js` 里可以看到，初始化了四个方法，这里是一个发布订阅。
+```js
+Vue.prototype.$on = function (event: string | Array<string>, fn: Function): Component {
+  //...
+}
+Vue.prototype.$once = function (event: string, fn: Function): Component {
+  //...
+}
+Vue.prototype.$off = function (event?: string | Array<string>, fn?: Function): Component {
+  //...
+}
+Vue.prototype.$emit = function (event: string): Component {
+  //...
+}
+```
+
+## lifecycleMixin(Vue);
+定义生命周期。在
+```js
+Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {}s
+Vue.prototype.$forceUpdate = function () {}
+Vue.prototype.$destroy = function () {}
+```
+
+## renderMixin(Vue)
+renderMixin, 在`Vue.prototype`上定义了一系列的方法。其中通过 installRenderHelpers
+```js
+// install runtime convenience helpers
+installRenderHelpers(Vue.prototype)
+// installRenderHelpers 函数
+export function installRenderHelpers (target: any) {
+  target._o = markOnce
+  target._n = toNumber
+  target._s = toString
+  target._l = renderList
+  target._t = renderSlot
+  target._q = looseEqual
+  target._i = looseIndexOf
+  target._m = renderStatic
+  target._f = resolveFilter
+  target._k = checkKeyCodes
+  target._b = bindObjectProps
+  target._v = createTextVNode
+  target._e = createEmptyVNode
+  target._u = resolveScopedSlots
+  target._g = bindObjectListeners
+}
+```
+然后是 `$nextTick` 和 `_render`
+```js
+Vue.prototype.$nextTick = function (fn: Function) {}
+Vue.prototype._render = function (): VNode {}
+``` 
