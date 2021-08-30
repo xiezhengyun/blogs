@@ -11948,6 +11948,7 @@
     // resolve template/el and convert to render function
     if (!options.render) {
       var template = options.template;
+      debugger
       if (template) {
         if (typeof template === 'string') {
           if (template.charAt(0) === '#') {
