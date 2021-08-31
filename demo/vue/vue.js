@@ -4491,6 +4491,7 @@
     var value;
     var vm = this.vm;
     try {
+      debugger
       value = this.getter.call(vm, vm);
     } catch (e) {
       if (this.user) {
@@ -11948,6 +11949,7 @@
     // resolve template/el and convert to render function
     if (!options.render) {
       var template = options.template;
+      debugger
       if (template) {
         if (typeof template === 'string') {
           if (template.charAt(0) === '#') {

@@ -22,11 +22,19 @@
     el: '#app',
     data() {
       return {
-        message: 'hello'
+        message: 'hello',
+        message2: 'hello2'
       }
     },
+    // 手写render函数，会覆盖template 和 el
+    render: function (createElement) {
+      return createElement('div', {
+        attrs: {
+          id: 'app2'
+        },
+      }, this.message2)
+    },
     mounted() {
-      debugger
       console.log(this.message)
       console.log(this._data.message)
     },
