@@ -27,13 +27,13 @@
       }
     },
     // 手写render函数，会覆盖template 和 el
-    render: function (createElement) {
-      return createElement('div', {
-        attrs: {
-          id: 'app2'
-        },
-      }, this.message2)
-    },
+    // render: function (createElement) {
+    //   return createElement('div', {
+    //     attrs: {
+    //       id: 'app2'
+    //     },
+    //   }, this.message2)
+    // },
     mounted() {
       console.log(this.message)
       console.log(this._data.message)

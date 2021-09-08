@@ -190,7 +190,8 @@ Vue.prototype.$emit = function (event: string): Component {
 ## lifecycleMixin(Vue);
 定义生命周期。在
 ```js
-Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {}s
+// 通过VNode 生成 真实dom，并挂载 。在首次渲染 或者 数据更新的时候 会调用
+Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {}
 Vue.prototype.$forceUpdate = function () {}
 Vue.prototype.$destroy = function () {}
 ```
