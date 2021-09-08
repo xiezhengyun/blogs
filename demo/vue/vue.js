@@ -3570,6 +3570,7 @@
         // when parent component is patched.
         currentRenderingInstance = vm;
         vnode = render.call(vm._renderProxy, vm.$createElement);
+        debugger
       } catch (e) {
         handleError(e, vm, "render");
         // return error render result,
