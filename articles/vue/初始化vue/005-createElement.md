@@ -135,3 +135,10 @@ export function _createElement (
 如果是为已注册的组件名，则通过 `createComponent` 创建一个组件类型的 `VNode`，否则创建一个未知的标签的 `VNode`。   
 
 如果是 `tag` 一个 `Component` 类型，则直接调用 `createComponent` 创建一个组件类型的 `VNode` 节点。对于 `createComponent` 创建组件类型的 `VNode` 的过程，本质上它还是返回了一个 `VNode`。
+
+# update
+在之前的`$mount`方法中，VNode 创建成功后，会调用 _update方法来生成真实dom并挂载。
+```js
+vm._update(vm._render(), hydrating)
+```
+_update 方法下一篇继续看。
