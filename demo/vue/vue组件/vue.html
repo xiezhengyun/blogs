@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>title</title>
+  <meta charset="utf-8">
+  <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="format-detection" content="email=no" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+</head>
+<script src="./vue.js"></script>
+<script src="./components/App.js"></script>
+
+<body>
+  <div id="app">
+    123
+    <card />
+  </div>
+</body>
+<script>
+  
+  var app = new Vue({
+    el: '#app',
+    data() {
+      return {
+        message: 'hello',
+        message2: 'hello2'
+      }
+    },
+  })
+
+</script>
+
+</html>
