@@ -64,11 +64,12 @@ Function.prototype.call2 = function (context) {
 Function.prototype.call3 = function (context, ...args) {
   var context = context || window;
   // 这里context可能存在了一个fn，不过就先这样
-  context.fn = this;
+  var fn = Symbol();
+  context[fn] = this;
   // 参数
-  var result = context.fn(...args)
+  var result = context[fn](...args)
 
-  delete context.fn;
+  delete contex[fn];
   return result;
 };
 ```
