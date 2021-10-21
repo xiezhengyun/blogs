@@ -9,19 +9,26 @@ function flat(arr, depth = 1) {
 
 console.log(flat([['first']], 3));
 
-function* flat(arr, depth = 1) {
-  for (const item of arr) {
-    if (Array.isArray(item) && depth > 0) {
-      // depth > 0
-      yield* flat(item, depth - 1);
+// 栈
+function flat(arr, depth = 1) {
+  const result = [];
+  const stack = [];
+  
+  for(let i in arr) stack.push([arr[i], depth])
+  
+  while (stack.length > 0) {
+    const [top, depth] = stack.pop() || [];
+    if (Array.isArray(top) && depth > 0) {
+      top.forEach(item => stack.push([item, depth -1]))
     } else {
-      yield item;
+      result.push(top);
     }
   }
+  return result.reverse();
 }
 const arr = [1, 2, 3, 4, [1, 2, 3, [1, 2, 3, [1, 2, 3]]], 5, 'string', { name: '12121' }];
 
-console.log([...flat(arr, Infinity)]);
+flat(arr);
 
 Array.prototype.flat2 = function (depth = 1) {
   let newArr = [...this];
