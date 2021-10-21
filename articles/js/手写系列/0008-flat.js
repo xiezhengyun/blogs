@@ -13,13 +13,13 @@ console.log(flat([['first']], 3));
 function flat(arr, depth = 1) {
   const result = [];
   const stack = [];
-  
-  for(let i in arr) stack.push([arr[i], depth])
-  
+
+  // for(let i in arr) stack.push([arr[i], depth])
+  stack = arr.map(item => [item, depth]);
   while (stack.length > 0) {
     const [top, depth] = stack.pop() || [];
     if (Array.isArray(top) && depth > 0) {
-      top.forEach(item => stack.push([item, depth -1]))
+      top.forEach(item => stack.push([item, depth - 1]));
     } else {
       result.push(top);
     }
