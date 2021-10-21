@@ -32,3 +32,16 @@ class EventEmitter {
     this.on(eventName, _once);
   }
 }
+let eventBus = new EventEmitter()
+let fn1 = function(name, age) {
+	console.log(`${name} ${age}`)
+}
+let fn2 = function(name, age) {
+	console.log(`hello, ${name} ${age}`)
+}
+eventBus.on('aaa', fn1)
+eventBus.on('aaa', fn2)
+eventBus.emit('aaa', '布兰', 12)
+eventBus.on('aaa', fn1)
+eventBus.on('aaa', fn2)
+eventBus.emit('aaa', '布兰', 12)
