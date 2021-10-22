@@ -27,6 +27,19 @@ var plusOne = function (digits) {
   return digits;
 };
 
+var plusOne = function (digits) {
+  var carry = 1;
+  var len = digits.length - 1;
+  while (len >= 0 && carry > 0) {
+    var sum = digits[len] + carry
+    var carry = sum >= 10 ? 1 : 0
+    digits[len] = sum % 10
+    len--
+  }
+  if (carry > 0) digits.unshift(carry)
+  return digits
+};
+
 // 下面是js的  push 和 unshift 速度测试
 
 var arr = [1, 'a', 'c', 'b', 2, 4, 'j'];
