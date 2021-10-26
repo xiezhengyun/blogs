@@ -39,7 +39,10 @@ class Promise {
         setTimeout(() => {
           try {
             let x = onFulfilled(this.value);
-            // resolvePromise函数，处理自己return的promise和默认的promise2的关系
+            //看x是不是promise 如果是promise取他的结果 作为promise2成功的的结果
+            //如果返回一个普通值，作为promise2成功的结果
+            //resolvePromise可以解析x和promise2之间的关系
+            //在resolvePromise中传入四个参数，第一个是返回的promise，第二个是返回的结果，第三个和第四个分别是resolve()和reject()的方法。
             resolvePromise(promise2, x, resolve, reject);
           } catch (e) {
             reject(e);
