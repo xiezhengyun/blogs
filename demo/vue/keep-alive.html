@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>title</title>
+  <meta charset="utf-8">
+  <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="format-detection" content="email=no" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+</head>
+
+<body>
+  <div id="app">
+    <button @click="switchComp('child1')">组件1</button>
+    <button @click="switchComp('child2')">组件2</button>
+    <keep-alive>
+      <component :is="chooseComponent"></component>
+    </keep-alive>
+  </div>
+  <script src="./vue.js"></script>
+  <script>
+    var child1 = {
+      template: '<div>组件1:<input type="text"/></div>',
+    }
+    var child2 = {
+      template: '<div>组件2:<input type="text"/></div>'
+    }
+    var vm = new Vue({
+      el: '#app',
+      components: {
+        child1,
+        child2,
+      },
+      data() {
+        return {
+          chooseComponent: 'child1',
+        }
+      },
+      methods: {
+        switchComp(component) {
+          this.chooseComponent = component;
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>

@@ -5378,6 +5378,8 @@
     },
 
     render: function render () {
+      console.log(this.keys,this.cache)
+      debugger
       var slot = this.$slots.default;
       var vnode = getFirstComponentChild(slot);
       var componentOptions = vnode && vnode.componentOptions;
