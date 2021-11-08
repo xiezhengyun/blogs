@@ -23,6 +23,21 @@
   <script>
     var child1 = {
       template: '<div>组件1:<input type="text"/></div>',
+      created() {
+        console.log('created')
+      },
+      mounted() {
+        console.log('mounted')
+      },
+      activated() {
+        console.log('activated')
+      },
+      destroy() {
+        console.log('destroy')
+      },
+      deactivated() {
+        console.log('deactivated')
+      }
     }
     var child2 = {
       template: '<div>组件2:<input type="text"/></div>'
