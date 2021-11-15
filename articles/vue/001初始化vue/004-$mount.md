@@ -107,8 +107,11 @@ Vue.prototype.$mount = function (el?: string | Element, hydrating?: boolean): Co
   return mount.call(this, el, hydrating);
 };
 ```
+- 根据传入的el参数获取DOM元素；
+- 在用户没有手写render函数的情况下获取传入的模板template；
+- 将获取到的template编译成render函数
 
-## 原来的\$mount
+## 原来的\$mount (运行时版本的$mount)
 
 在`platform/web/runtime/index.js`里可以看到：这里只是执行了 `mountComponent`这个函数。
 
