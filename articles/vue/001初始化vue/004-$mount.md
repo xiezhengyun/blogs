@@ -1,5 +1,35 @@
 # \$mount
 
+## 两种\$mount 方法
+
+只包含运行时版本的$mount代码如下。   
+在该版本中的$mount 方法内部获取到 el 选项对应的 DOM 元素后直接调用 mountComponent 函数进行挂载操作
+
+```js
+Vue.prototype.$mount = function (el, hydrating) {
+  el = el && inBrowser ? query(el) : undefined;
+  return mountComponent(this, el, hydrating);
+};
+```
+
+完整版本的\$mount
+
+```js
+var mount = Vue.prototype.$mount;
+Vue.prototype.$mount = function (el, hydrating) {
+  // 省略获取模板及编译代码
+
+  return mount.call(this, el, hydrating);
+};
+```
+
+在源码中，是先定义只包含运行时版本的$mount方法，再定义完整版本的$mount方法，所以此时缓存的mount变量就是只包含运行时版本的$mount方法。  
+
+完整版本和只包含运行时版本之间的差异主要在于是否有模板编译阶段，只包含运行时版本没有模板编译阶段，初始化阶段完成后直接进入挂载阶段，而完整版本是初始化阶段完成后进入模板编译阶段，然后再进入挂载阶段
+
+这两个版本最终都会进入挂载阶段。所以在完整版本的$mount方法中将模板编译完成后需要回头去调只包含运行时版本的$mount方法以进入挂载阶段。
+
+
 ## entry-runtime-with-compiler
 
 在入口文件`platform/web/entry-runtime-with-compiler.js`中可以看到这个方法，首先是缓存了原来的$mount，加入了`Runtime + Compiler`版本`在线编译`的代码，然后重新执行原来的$mount。
@@ -202,14 +232,15 @@ Vue.prototype._render = function (): VNode {
   return vnode;
 };
 ```
-`const { render, _parentVnode } = vm.$options;` 从$options 里拿到了 `render`方法。  （这个方法可以是用户自己写，也可以是编译生成）
+
+`const { render, _parentVnode } = vm.$options;` 从\$options 里拿到了 `render`方法。 （这个方法可以是用户自己写，也可以是编译生成）
 
 之前说了`_render`函数是生成`vnode`，所以核心代码`vnode = render.call(vm._renderProxy, vm.$createElement)`, call 传入两个参数执行
 
 - `_renderProxy`生产环境就是当前实例`vm`(\_init 的时候定义)
-- `$createElement` 是在`initRender()` 的时候定义的。  
+- `$createElement` 是在`initRender()` 的时候定义的。
 
-从下面手写render函数例子代码中可以看出，render 函数，最终执行了`$createElement`这个函数。
+从下面手写 render 函数例子代码中可以看出，render 函数，最终执行了`$createElement`这个函数。
 之前看到过`initRender()`也是在`new Vue`时`this._init(options)`里执行的。`initRender()`中定义了 `$createElement`
 
 ```js
@@ -235,4 +266,5 @@ render: function (createElement) {
   }, this.message)
 }
 ```
+
 # createElement
