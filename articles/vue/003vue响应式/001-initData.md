@@ -334,11 +334,9 @@ export function set(target: Array<any> | Object, key: any, val: any): any {
   // 第二个条件是：根数据对象将拥有一个特质，即 target.__ob__.vmCount > 0，这样条件 (ob && ob.vmCount) 是成立的，也就是说：当使用 Vue.set/$set 函数为根数据对象添加属性时，是不被允许的。
   // 永远触发不了依赖,因为 根数据对象的 Observer 实例收集不到依赖，data本身并不是响应的
   if (target._isVue || (ob && ob.vmCount)) {
-  process.env.NODE_ENV !== 'production' && warn(
-      'Avoid adding reactive properties to a Vue instance or its root $data ' +
-      'at runtime - declare it upfront in the data option.'
-    )
-    return val
+    process.env.NODE_ENV !== 'production' &&
+      warn('Avoid adding reactive properties to a Vue instance or its root $data ' + 'at runtime - declare it upfront in the data option.');
+    return val;
   }
   if (!ob) {
     target[key] = val;
@@ -351,3 +349,5 @@ export function set(target: Array<any> | Object, key: any, val: any): any {
   return val;
 }
 ```
+
+![](../../../Images/vue/vue-mvvm.jpg)
