@@ -168,3 +168,7 @@ nextTick 函数:
 [https://github.com/vuejs/vue/blob/v2.5.22/src/core/util/next-tick.js](https://github.com/vuejs/vue/blob/v2.5.22/src/core/util/next-tick.js)
 
 [https://github.com/vuejs/vue/blob/v2.4.4/src/core/util/env.js](https://github.com/vuejs/vue/blob/v2.4.4/src/core/util/env.js)
+
+## 从event loop规范探究javaScript异步及浏览器更新渲染时机 
+
+[从event loop规范探究javaScript异步及浏览器更新渲染时机 ](https://github.com/aooy/blog/issues/5)
