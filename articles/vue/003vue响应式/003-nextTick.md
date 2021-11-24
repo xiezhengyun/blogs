@@ -157,6 +157,7 @@ nextTick 函数:
 - 执行异步延迟函数 timerFunc
 
 ## 版本差异
+
 其实 Vue 2.4、2.5、2.6 版本的 nextTick 策略都不一样。
 
 整体 2.6 和 2.4 的比较相似。（仔细瞅了瞅，基本就是一样的，2.6 的 timerFunc 多了个 setImmediate 判断）
@@ -169,6 +170,33 @@ nextTick 函数:
 
 [https://github.com/vuejs/vue/blob/v2.4.4/src/core/util/env.js](https://github.com/vuejs/vue/blob/v2.4.4/src/core/util/env.js)
 
-## 从event loop规范探究javaScript异步及浏览器更新渲染时机 
+## nextTick 为什么要尽可能的 microtask 优先？
 
-[从event loop规范探究javaScript异步及浏览器更新渲染时机 ](https://github.com/aooy/blog/issues/5)
+![](../../../Images/vue/eventloop.jpg)
+
+我们发现，原来在执行微任务之后还会执行渲染操作！！！（当然并不是每次都会，但至少顺序我们是可以肯定的）。
+
+- 在一轮 event loop 中多次修改同一 dom，只有最后一次会进行绘制。
+- 渲染更新`（Update the rendering）`会在 `event loop` 中的 `tasks` 和 `microtasks` 完成后进行，但并不是每轮 `event loop` 都会更新渲染，这取决于是否修改了 dom 和浏览器觉得是否有必要在此时立即将新状态呈现给用户。如果在一帧的时间内（时间并不确定，因为浏览器每秒的帧数总在波动，16.7ms 只是估算并不准确）修改了多处 dom，浏览器可能将变动积攒起来，只进行一次绘制，这是合理的。
+- 如果希望在每轮 event loop 都即时呈现变动，可以使用 requestAnimationFrame。
+
+
+![](https://github.com/aooy/aooy.github.io/blob/master/blog/issues5/img/application1.jpg?raw=true)
+
+
+假设现在执行到某个 task，我们对批量的 dom 进行异步修改，我们将此任务插进 tasks，也就是用宏任务实现。
+
+![](https://github.com/aooy/aooy.github.io/blob/master/blog/issues5/img/application2.jpg?raw=true)
+
+显而易见，这种情况下如果 task 里排队的队列比较多，同时遇到多次的微任务队列执行完。那很有可能触发多次浏览器渲染，但是依旧没有执行我们真正的修改 dom 任务
+
+这种情况，不仅会延迟视图更新，带来性能问题。还有可能导致视图上一些诡异的问题。 因此，此任务插进 microtasks：
+
+![](https://github.com/aooy/aooy.github.io/blob/master/blog/issues5/img/application3.jpg?raw=true)
+
+可以看到如果 task 队列如果有大量的任务等待执行时，将 dom 的变动作为 microtasks 而不是宏任务（task）能更快的将变化呈现给用户。
+
+
+## 从 event loop 规范探究 javaScript 异步及浏览器更新渲染时机
+
+[从 event loop 规范探究 javaScript 异步及浏览器更新渲染时机 ](https://github.com/aooy/blog/issues/5)
