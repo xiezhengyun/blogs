@@ -11,7 +11,7 @@
 
 - 根据 vm.$options.data 选项获取真正想要的数据（注意：此时 vm.$options.data 是函数）
 - 校验得到的数据是否是一个纯对象
-- 检查数据对象 data 上的键是否与 props 对象上的键冲突 （**props 优先级 > data 优先级 > methods 优先级。**）
+- 检查数据对象 data 上的键是否与 props 对象上的键冲突 （**props 优先级 > data 优先级 > methods > computed优先级。**）
 - 检查 methods 对象上的键是否与 data 对象上的键冲突
 - 在 Vue 实例对象上添加代理访问数据对象的同名属性
 - **最后调用 `observe` 函数开启响应式之路**
