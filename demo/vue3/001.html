@@ -12,14 +12,15 @@
 </head>
 <!-- <script src="https://cdn.jsdelivr.net/npm/vue@3.2.22/dist/vue.global.js"></script> -->
 <script src="./lib/vue.global.js"></script>
+
 <body>
   <div id="app">
-    <p @click="random">{{msg}}</p> 
+    <p @click="random">{{msg}}</p>
     <p @click="add">{{count}}</p>
   </div>
 </body>
 <script>
-  const { ref } = Vue
+  const { ref, watch, onMounted, watchEffect } = Vue
   var App = {
     data() {
       return {
@@ -32,6 +33,27 @@
       const add = () => {
         count.value++
       }
+      const initCount = () => {
+        count.value = 100
+      }
+      const alert = () => {
+        console.log(11111)
+      }
+      onMounted([initCount, alert])
+      watch(count, (newValue, oldValue) => {
+        console.log('The new count value is: ' + count.value)
+      })
+
+      watchEffect(async onInvalidate => {
+        console.log('watchEffect' + count.value)
+        // console.log('watchEffect' + msg.value)
+        onInvalidate(() => {
+          console.log( 'onInvalidate' + count.value)
+          /* ... */
+        }) // 我们在Promise解析之前注册清除函数
+        // data.value = await fetchData(props.id)
+      })
+
       return {
         msg,
         count,
