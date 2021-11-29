@@ -113,19 +113,18 @@
         };
 
         return {
-          notes,
-          notesArePublic,
-          saveAndClose,
+          data,
+          saveAndClose
         };
       },
     };
     var vm = Vue.createApp(App).mount("#app2");
   </script>
 </body>
-  <ul>
-    <li>watch can be used to lazily trigger side effects (watchEffect is always immediate).</li>
-    <li>watchEffect automatically watches for changes to any state changes (watch must be provided with a variable or variables to watch).</li>
-    <li>watch provides access to the current and previous values.</li>
-  </ul>
-</html>
+<ul>
+  <li>watch can be used to lazily trigger side effects (watchEffect is always immediate).</li>
+  <li>watchEffect automatically watches for changes to any state changes (watch must be provided with a variable or variables to watch).</li>
+  <li>watch provides access to the current and previous values.</li>
+</ul>
 
+</html>
