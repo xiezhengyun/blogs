@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>title</title>
+  <meta charset="utf-8">
+  <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="format-detection" content="email=no" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+</head>
+<!-- <script src="https://cdn.jsdelivr.net/npm/vue@3.2.22/dist/vue.global.js"></script> -->
+<script src="./lib/vue.global.js"></script>
+<body>
+  <div id="app">
+    <p @click="random">{{msg}}</p> 
+    <p @click="add">{{count}}</p>
+  </div>
+</body>
+<script>
+  const { ref } = Vue
+  var App = {
+    data() {
+      return {
+        msg: 'msg from data'
+      }
+    },
+    setup() {
+      const msg = ref('msg from setup')
+      const count = ref(0)
+      const add = () => {
+        count.value++
+      }
+      return {
+        msg,
+        count,
+        add
+      }
+    },
+    methods: {
+      random() {
+        this.msg = Math.random()
+      }
+    }
+  }
+  var vm = Vue.createApp(App).mount("#app");
+</script>
+
+</html>
