@@ -274,59 +274,71 @@ function createRef(rawValue, shallow = false) {
   }
   return new RefImpl(rawValue, shallow)
 }
+class RefImpl<T> {
+  private _value: T
+  private _rawValue: T
 
-class RefImpl {
-  constructor(value, _shallow = false) {
-    this._shallow = _shallow
-    this.dep = undefined
-    this.__v_isRef = true
+  public dep?: Dep = undefined
+  // 每一个 ref 实例下都有一个__v_isRef 的只读属性，标识它是一个 ref
+  public readonly __v_isRef = true
+  constructor(value: T, public readonly _shallow: boolean) {
+    // 判断是不是浅比较，如果不是就拿老值
     this._rawValue = _shallow ? value : toRaw(value)
+    // 判断是不是浅比较，如果不是就调convert，判断如果是对象就调用 reactive()
     this._value = _shallow ? value : convert(value)
   }
+  // ref.value 这样取值
   get value() {
+    // 进行依赖收集
     trackRefValue(this)
     return this._value
   }
   set value(newVal) {
+    // 如果是浅比较，就取新值，不是就取老值
     newVal = this._shallow ? newVal : toRaw(newVal)
+    // 比较新旧值
     if (hasChanged(newVal, this._rawValue)) {
+      // 值已更换，重新赋值
       this._rawValue = newVal
       this._value = this._shallow ? newVal : convert(newVal)
+      // 派发更新
       triggerRefValue(this, newVal)
     }
   }
 }
 // 直接把 ref 的相关依赖保存到 dep 属性中，而在 track 函数的实现中，会把依赖保留到全局的 targetMap 中：
-function trackRefValue(ref) {
+export function trackRefValue(ref: RefBase<any>) {
+  // 如果激活了 effect，就收集
   if (isTracking()) {
     ref = toRaw(ref)
+    // 如果该属性没有没有收集过依赖函数，就创建一个 dep，用来存放依赖 effect
     if (!ref.dep) {
       ref.dep = createDep()
     }
-    if ((process.env.NODE_ENV !== 'production')) {
+    // 开发环境
+    if (__DEV__) {
       trackEffects(ref.dep, {
         target: ref,
-        type: "get" /* GET */,
+        type: TrackOpTypes.GET,
         key: 'value'
       })
-    }
-    else {
+    } else {
+      // 调用本文上面的 trackEffects 收集依赖
       trackEffects(ref.dep)
     }
   }
 }
-function triggerRefValue(ref, newVal) {
+export function triggerRefValue(ref: RefBase<any>, newVal?: any) {
   ref = toRaw(ref)
   if (ref.dep) {
-    if ((process.env.NODE_ENV !== 'production')) {
+    if (__DEV__) {
       triggerEffects(ref.dep, {
         target: ref,
-        type: "set" /* SET */,
+        type: TriggerOpTypes.SET,
         key: 'value',
         newValue: newVal
       })
-    }
-    else {
+    } else {
       triggerEffects(ref.dep)
     }
   }
