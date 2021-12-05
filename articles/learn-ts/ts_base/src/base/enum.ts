@@ -49,6 +49,7 @@ enum G { a = 'apple', b = 'bbbb' }
 
 let e: E = 3
 let f: F = 3
+console.log('e------: ', e) //3
 // e === f error 不能进行比较
 
 let e1: E.a = 1
