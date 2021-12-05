@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+  <script src="./lib/vue.global.js"></script>
+  <div id="app">
+    <h2>Notes:</h2>
+    <textarea v-model="notes"></textarea>
+    <br>
+    <label>
+      Make notes public:
+      <input type="checkbox" v-model="notesArePublic" />
+    </label>
+    <button @click="saveAndClose">Finish editing</button>
+  </div>
+
+  <script>
+    (() => {
+      const { watchEffect, ref } = Vue;
+
+      const save = (obj) => {
+        let flag = true
+        setTimeout(() => {
+          if (flag) console.log(obj)
+        }, 5000)
+        return () => {
+          console.log('return cancel')
+          flag = false
+        }
+      }
+      const App = {
+        setup() {
+          const notes = ref("");
+          const notesArePublic = ref(false);
+          // onInvalidate 可以 该函数可用于中止 API 请求。当 onInvalidate 触发器时，我们调用 cancel，中止 API 请求。不需要等待已经过时的响应！
+          // 简单的理解 连续触发  可以看作只执行最后一次
+          const stopSaving = watchEffect((onInvalidate) => {
+            const cancel = save({
+              notes: notes.value,
+              notesArePublic: notesArePublic.value,
+            });
+            console.log(typeof cancel)
+            onInvalidate(() => cancel());
+          });
+
+          const saveAndClose = () => {
+            stopSaving();
+          };
+
+          return {
+            notes,
+            notesArePublic,
+            saveAndClose,
+          };
+        },
+      };
+      var vm = Vue.createApp(App).mount("#app");
+    })()
+  </script>
+
+
+
+  <!-- watchEffect 不会深度监听 -->
+  <div id="app2">
+    <h2>Notes:</h2>
+    <textarea v-model="data.notes"></textarea>
+    <label>
+      Make notes public:
+      <input type="checkbox" v-model="data.notesArePublic" />
+    </label>
+    <button @click="saveAndClose">Finish editing</button>
+  </div>
+
+  <script>
+    const { watchEffect, ref, toRefs, reactive } = Vue;
+
+    const save = (obj) => {
+      let flag = true
+      setTimeout(() => {
+        if (flag) console.log(obj)
+      }, 5000)
+      return () => {
+        console.log('return cancel')
+        flag = false
+      }
+    }
+    const App = {
+      setup() {
+        const data = reactive({
+          notes: "",
+          notesArePublic: false,
+        });
+
+        // onInvalidate 可以 该函数可用于中止 API 请求。当 onInvalidate 触发器时，我们调用 cancel，中止 API 请求。不需要等待已经过时的响应！
+        // 简单的理解 连续触发  可以看作只执行最后一次
+        const stopSaving = watchEffect((onInvalidate) => {
+          // This doesn't work
+          // const cancel = save(data);
+
+          // This does
+          const parsed = toRefs(data);
+
+          const cancel = save({
+            notes: parsed.notes.value,
+            notesArePublic: parsed.notesArePublic.value
+          })
+
+          onInvalidate(() => cancel());
+        });
+
+        const saveAndClose = () => {
+          stopSaving();
+        };
+
+        return {
+          data,
+          saveAndClose
+        };
+      },
+    };
+    var vm = Vue.createApp(App).mount("#app2");
+  </script>
+</body>
+<ul>
+  <li>watch can be used to lazily trigger side effects (watchEffect is always immediate).</li>
+  <li>watchEffect automatically watches for changes to any state changes (watch must be provided with a variable or variables to watch).</li>
+  <li>watch provides access to the current and previous values.</li>
+</ul>
+
+</html>
