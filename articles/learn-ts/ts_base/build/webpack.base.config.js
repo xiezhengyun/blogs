@@ -1,9 +1,13 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.ts',
+  // entry: './src/index.ts',
+  entry: {
+    entry1: './src/index.ts',
+    entry2: './src/base/enum.ts'
+  },
   output: {
-    filename: 'app.js',
+    filename: '[name].js',
   },
   resolve: {
     extensions: ['.js', '.ts', '.tsx'],
