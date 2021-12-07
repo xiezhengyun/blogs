@@ -164,14 +164,8 @@ const arrayInstrumentations = {}[('includes', 'indexOf', 'lastIndexOf')].forEach
 我们先想一下要收集的依赖是什么，我们的目的是实现响应式，就是当数据变化的时候可以自动做一些事情，比如执行某些函数，**所以我们收集的依赖就是数据变化后执行的副作用函数。**
 
 ```js
-// 是否应该收集依赖
-let shouldTrack = true;
-// 当前激活的 effect
-let activeEffect;
-// 原始数据对象 map
-const targetMap = new WeakMap();
 function track(target, type, key) {
-  if (!shouldTrack || activeEffect === undefined) {
+  if (!isTracking()) {
     return;
   }
   let depsMap = targetMap.get(target);
@@ -182,13 +176,42 @@ function track(target, type, key) {
   let dep = depsMap.get(key);
   if (!dep) {
     // 每个 key 对应一个 dep 集合
-    depsMap.set(key, (dep = new Set()));
+    depsMap.set(key, (dep = createDep()));
   }
-  if (!dep.has(activeEffect)) {
+  const eventInfo = process.env.NODE_ENV !== 'production' ? { effect: activeEffect, target, type, key } : undefined;
+  trackEffects(dep, eventInfo);
+}
+
+function trackEffects(dep, debuggerEventExtraInfo) {
+  // 是否应该收集依赖
+  let shouldTrack = false;
+  if (effectTrackDepth <= maxMarkerBits) {
+    // 在 dep 把前激活的 effect 作为依赖收集前，会判断这个 dep 是否已经被收集，如果已经被收集，则不需要再次收集
+    if (!newTracked(dep)) {
+      // 标记为新依赖
+      dep.n |= trackOpBit;
+      // 如果依赖已经被收集，则不需要再次收集
+      shouldTrack = !wasTracked(dep);
+    }
+  } else {
+    // cleanup 模式
+    shouldTrack = !dep.has(activeEffect);
+  }
+  if (shouldTrack) {
     // 收集当前激活的 effect 作为依赖
     dep.add(activeEffect);
     // 当前激活的 effect 收集 dep 集合作为依赖
     activeEffect.deps.push(dep);
+    if (process.env.NODE_ENV !== 'production' && activeEffect.onTrack) {
+      activeEffect.onTrack(
+        Object.assign(
+          {
+            effect: activeEffect,
+          },
+          debuggerEventExtraInfo
+        )
+      );
+    }
   }
 }
 ```
@@ -227,45 +250,117 @@ function createSetter() {
 
 set 函数的实现逻辑很简单，主要就做两件事情， 首先通过 Reflect.set 求值 ， 然后通过 trigger 函数派发通知 ，并依据 key 是否存在于 target 上来确定通知类型，即新增还是修改。
 
-核心部分是**执行 trigger 函数派发通知**,  **每次 trigger 函数就是根据 target 和 key ，从 targetMap 中找到相关的所有副作用函数遍历执行一遍。**
+核心部分是**执行 trigger 函数派发通知**, **每次 trigger 函数就是根据 target 和 key ，从 targetMap 中找到相关的所有副作用函数遍历执行一遍。**
 
 ```js
 // 原始数据对象 map
 const targetMap = new WeakMap();
-function trigger(target, type, key, newValue) {
-  // 通过 targetMap 拿到 target 对应的依赖集合
-  const depsMap = targetMap.get(target);
+export function trigger(
+  target: object,
+  type: TriggerOpTypes,
+  key?: unknown,
+  newValue?: unknown,
+  oldValue?: unknown,
+  oldTarget?: Map<unknown, unknown> | Set<unknown>
+) {
+  // 从依赖管理中心中获取依赖
+  const depsMap = targetMap.get(target)
+  // 没有被收集过的依赖，直接返回
   if (!depsMap) {
-    // 没有依赖，直接返回
-    return;
+    return
   }
-  // 创建运行的 effects 集合
-  const effects = new Set();
-  // 添加 effects 的函数
-  const add = effectsToAdd => {
-    if (effectsToAdd) {
-      effectsToAdd.forEach(effect => {
-        effects.add(effect);
-      });
+
+  let deps: (Dep | undefined)[] = []
+  // 触发trigger 的时候传进来的类型是清除类型
+  if (type === TriggerOpTypes.CLEAR) {
+    // 往队列中添加关联的所有依赖，准备清除
+    deps = [...depsMap.values()]
+  } else if (key === 'length' && isArray(target)) {
+    // 如果是数组类型的，并且是数组的 length 改变时
+    depsMap.forEach((dep, key) => {
+      // 如果数组长度变短时，需要做已删除数组元素的 effects 和 trigger
+      // 也就是索引号 >= 数组最新的length的元素们对应的 effects，要将它们添加进队列准备清除
+      if (key === 'length' || key >= (newValue as number)) {
+        deps.push(dep)
+      }
+    })
+  } else {
+    // 如果 key 不是 undefined，就添加对应依赖到队列，比如新增、修改、删除
+    if (key !== void 0) {
+      deps.push(depsMap.get(key))
     }
-  };
-  // SET | ADD | DELETE 操作之一，添加对应的 effects
-  if (key !== void 0) {
-    add(depsMap.get(key));
+    // 新增、修改、删除分别处理
+    switch (type) {
+      case TriggerOpTypes.ADD: // 新增
+        ...
+        break
+      case TriggerOpTypes.DELETE: // 删除
+        ...
+        break
+      case TriggerOpTypes.SET: // 修改
+        ...
+        break
+    }
   }
-  const run = effect => {
-    // 调度执行
-    if (effect.options.scheduler) {
-      effect.options.scheduler(effect);
+  // 到这里就拿到了 targetMap[target][key]，并存到 deps 里
+  // 接着是要将对应的 effect 取出，调用 triggerEffects 执行
+
+  // 判断开发环境，传入eventInfo
+  const eventInfo = __DEV__
+    ? { target, type, key, newValue, oldValue, oldTarget }
+    : undefined
+
+  if (deps.length === 1) {
+    if (deps[0]) {
+      if (__DEV__) {
+        triggerEffects(deps[0], eventInfo)
+      } else {
+        triggerEffects(deps[0])
+      }
+    }
+  } else {
+    const effects: ReactiveEffect[] = []
+    for (const dep of deps) {
+      if (dep) {
+        effects.push(...dep)
+      }
+    }
+    if (__DEV__) {
+      triggerEffects(createDep(effects), eventInfo)
     } else {
-      // 直接运行
-      effect();
+      triggerEffects(createDep(effects))
     }
-  };
-  // 遍历执行 effects
-  effects.forEach(run);
+  }
+}
+
+export function triggerEffects(
+  dep: Dep | ReactiveEffect[],
+  debuggerEventExtraInfo?: DebuggerEventExtraInfo
+) {
+  // 遍历 effect 的集合函数
+  for (const effect of isArray(dep) ? dep : [...dep]) {
+    /**
+      这里判断 effect !== activeEffect的原因是：不能和当前effect 相同
+      比如：count.value++，如果这是个effect，会触发getter，track收集了当前激活的 effect，
+      然后count.value = count.value+1 会触发setter，执行trigger，
+      就会陷入一个死循环，所以要过滤当前的 effect
+    */
+    if (effect !== activeEffect || effect.allowRecurse) {
+      if (__DEV__ && effect.onTrigger) {
+        effect.onTrigger(extend({ effect }, debuggerEventExtraInfo))
+      }
+      // 如果 scheduler 就执行，计算属性有 scheduler
+      if (effect.scheduler) {
+        effect.scheduler()
+      } else {
+        // 执行 effect 函数
+        effect.run()
+      }
+    }
+  }
 }
 ```
+
 - 通过 targetMap 拿到 target 对应的依赖集合 depsMap；
 - 创建运行的 effects 集合
 - 根据 key 从 depsMap 中找到对应的 effects 添加到 effects 集合；
