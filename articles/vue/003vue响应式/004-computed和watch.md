@@ -208,8 +208,29 @@ watch: {
 ```
 
 ## user watcher
-
-通过 vm.\$watch 创建的 watcher 是一个 user watcher，其实它的功能很简单，在对 watcher 求值以及在执行回调函数的时候，会处理一下错误
+```js
+Vue.prototype.$watch = function (
+    expOrFn: string | Function,
+    cb: any,
+    options?: Object
+  ): Function {
+    const vm: Component = this
+    if (isPlainObject(cb)) {
+      return createWatcher(vm, expOrFn, cb, options)
+    }
+    options = options || {}
+    options.user = true
+    const watcher = new Watcher(vm, expOrFn, cb, options)
+    if (options.immediate) {
+      cb.call(vm, watcher.value)
+    }
+    return function unwatchFn () {
+      watcher.teardown()
+    }
+  }
+}
+```
+通过 vm.\$watch 创建的 watcher 是一个 user watcher( options.user = true)，其实它的功能很简单，在对 watcher 求值以及在执行回调函数的时候，会处理一下错误
 
 ```js
 get() {
