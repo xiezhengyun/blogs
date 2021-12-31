@@ -42,7 +42,7 @@ const Vue = (function () {
   function defineReactive(obj, key, val) {
     const dep = new Dep();
     // 给当前属性的值添加监听
-    let chlidOb = observe(val);
+    let chlidOb = observe(val); // 递归遍历所有子属性
     Object.defineProperty(obj, key, {
       enumerable: true,
       configurable: true,
@@ -51,7 +51,8 @@ const Vue = (function () {
         // target指向一个Watcher实例，每个Watcher都是一个订阅者
         // Watcher实例在实例化过程中，会读取data中的某个属性，从而触发当前get方法
         if (Dep.target) {
-          dep.depend();
+          debugger
+          dep.depend(); // 可以直接  dep.addSub(Dep.target);
         }
         return val;
       },
@@ -76,6 +77,8 @@ const Vue = (function () {
 
   class Watcher {
     constructor(vm, expOrFn, cb) {
+      console.log(vm, expOrFn, cb)
+      debugger
       this.depIds = {}; // hash储存订阅者的id,避免重复的订阅者
       this.vm = vm; // 被订阅的数据一定来自于当前Vue实例
       this.cb = cb; // 当数据更新时想要做的事情
@@ -108,7 +111,6 @@ const Vue = (function () {
       const val = this.vm._data[this.expOrFn];
       // 置空，用于下一个Watcher使用
       Dep.target = null;
-      console.log(Dep.target, 2);
       return val;
     }
   }
