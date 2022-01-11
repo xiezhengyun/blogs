@@ -88,3 +88,20 @@ const arrayToTree3 = (data, pid = 0) => {
   getChildren(data, result, pid);
   return result;
 };
+
+function buildthree(arr, pid = 0){
+  let res = []
+
+  function getChildren(result, pid){
+    for(const item of arr){
+      if (item.pid === pid){
+        const newItem = {...item, children: []}
+        result.push(newItem)
+        getChildren(newItem.children, item.id)
+      }
+    }
+  }
+  getChildren(res, pid)
+  return res
+}
+console.log(buildthree(arr))
