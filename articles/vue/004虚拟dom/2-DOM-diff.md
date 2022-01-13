@@ -1,3 +1,7 @@
+# 思想 前提（降级为O(n)）
+
+- 不同的组件产生不同的 DOM 结构。当type不相同时，对应DOM操作就是直接销毁老的DOM，创建新的DOM。
+- 同一层次的一组子节点，可以通过唯一的 key 区分。
 # patch
 
 在 Vue 中，把 DOM-Diff 过程叫做 patch 过程。patch,意为“补丁”，即指对旧的 VNode 修补，打补丁从而得到新的 VNode。
