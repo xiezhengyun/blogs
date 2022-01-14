@@ -73,7 +73,9 @@ $watch('a.b', () => {
 });
 ```
 ## 原理
-所以响应式原理就是，我们通过递归遍历，把vue实例中data里面定义的数据，用defineReactive（Object.defineProperty）重新定义。每个数据内新建一个Dep实例，闭包中包含了这个 Dep 类的实例，用来收集 Watcher 对象。在对象被「读」的时候，会触发 reactiveGetter 函数把当前的 Watcher 对象（存放在 Dep.target 中）收集到 Dep 类中去。之后如果当该对象被「写」的时候，则会触发 reactiveSetter 方法，通知 Dep 类调用 notify 来触发所有 Watcher 对象的 update 方法更新对应视图。
+- vue数据双向绑定是通过数据劫持结合发布者-订阅者模式的方式来实现的
+
+- 所以响应式原理就是，我们通过递归遍历，把vue实例中data里面定义的数据，用defineReactive（Object.defineProperty）重新定义。每个数据内新建一个Dep实例，闭包中包含了这个 Dep 类的实例，用来收集 Watcher 对象。在对象被「读」的时候，会触发 reactiveGetter 函数把当前的 Watcher 对象（存放在 Dep.target 中）收集到 Dep 类中去。之后如果当该对象被「写」的时候，则会触发 reactiveSetter 方法，通知 Dep 类调用 notify 来触发所有 Watcher 对象的 update 方法更新对应视图。
 ## 实现逻辑
 
 - observe 处理 data 里定义的数据，使之变成响应式（这里对象数据和数组数据稍有不同）
