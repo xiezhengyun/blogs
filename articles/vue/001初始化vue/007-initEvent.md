@@ -219,3 +219,10 @@ export function updateListeners(on: Object, oldOn: Object, add: Function, remove
 
 
 调用updateComponentListeners函数，将父组件向子组件注册的事件注册到子组件实例中的_events对象里。
+
+## 总结
+父组件既可以给子组件上绑定自定义事件，也可以绑定浏览器原生事件。这两种事件有着不同的处理时机，浏览器原生事件是由父组件处理，而自定义事件是在子组件初始化的时候由父组件传给子组件，再由子组件注册到实例的事件系统中。
+
+也就是说：**初始化事件函数initEvents实际上初始化的是父组件在模板中使用v-on或@注册的监听子组件内触发的事件。**
+
+最后分析了initEvents函数的具体实现过程，该函数内部首先在实例上新增了_events属性并将其赋值为空对象，用来存储事件。接着通过调用updateComponentListeners函数，将父组件向子组件注册的事件注册到子组件实例中的_events对象里。
