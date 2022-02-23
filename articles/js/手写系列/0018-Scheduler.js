@@ -4,13 +4,13 @@ class Scheduler {
     // 待运行的任务
     this.queue = [];
     // 正在运行的任务
-    this.run = [];
+    this.runningTasks = 0;
   }
 
   add(task) {
     return new Promise((resolve) => {
       task.resolve = resolve;
-      if (this.run.length < this.count) {
+      if (this.runningTasks < this.count) {
         // 运行任务
         this.schedule(task);
       } else {
@@ -21,11 +21,13 @@ class Scheduler {
   }
 
   schedule(task) {
-    this.run.push(task);
+    this.runningTasks++
+    // this.run.push(task);
     task().then(() => {
       task.resolve();
       // 移除当前任务
-      this.removeRunTask(task);
+      // this.removeRunTask(task);
+      this.runningTasks--
 
       // 增加新的任务
       if (this.queue.length > 0) {
@@ -33,11 +35,6 @@ class Scheduler {
         this.schedule(newTask);
       }
     });
-  }
-
-  removeRunTask(task) {
-    const index = this.run.indexOf(task);
-    this.run.splice(index, 1);
   }
 }
 
