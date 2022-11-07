@@ -54,6 +54,10 @@ function checkShouldComponentUpdate() {
 
 - PureComponent 的父组件是函数组件的情况，绑定函数要用 useCallback 或者 useMemo 处理。因为函数组件每一次执行，如果不处理，还会声明一个新的函数，所以 PureComponent 对比同样会失效
 
+useCallback 和 useMemo 有什么区别？
+
+useCallback 第一个参数就是缓存的内容，useMemo 需要执行第一个函数，返回值为缓存的内容，比起 useCallback ， useMemo 更像是缓存了一段逻辑，或者说执行这段逻辑获取的结果。
+
 ### shouldComponentUpdate
 
 ### React.memo
