@@ -104,4 +104,4 @@ function buildthree(arr, pid = 0){
   getChildren(res, pid)
   return res
 }
-console.log(buildthree(arr))
+console.log(JSON.stringify(buildthree(arr), null, 2))
