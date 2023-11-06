@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>title</title>
+  <meta charset="utf-8">
+  <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="format-detection" content="email=no" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+</head>
+<!-- <script src="https://cdn.jsdelivr.net/npm/vue@3.2.22/dist/vue.global.js"></script> -->
+<script src="./lib/vue.global.js"></script>
+
+<body>
+  <div id="app">
+    <p @click="onUsernameInput">onUsernameInput</p>
+    <p @click="onPasswordInput">onPasswordInput</p>
+    {{formState.usernameCount}}
+    {{formState.passwordCount}}
+  </div>
+</body>
+<script>
+  const {ref, watch, onMounted, watchEffect, reactive} = Vue
+  var App = {
+    setup() {
+      const formState = reactive({
+        username: '',
+        password: '',
+        usernameCount: 0,
+        passwordCount: 0,
+      })
+
+      function onUsernameInput(event) {
+        // formState.username = event.target.value
+        formState.usernameCount += 1
+      }
+
+      function onPasswordInput(event) {
+        // formState.password = event.target.value
+        formState.passwordCount += 1
+      }
+
+      return {
+        formState,
+        onUsernameInput,
+        onPasswordInput,
+      }
+    }
+  }
+  var vm = Vue.createApp(App).mount("#app");
+</script>
+
+</html>

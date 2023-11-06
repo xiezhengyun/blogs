@@ -17,10 +17,12 @@
   <div id="app">
     <p @click="random">{{msg}}</p>
     <p @click="add">{{count}}</p>
+    <p @click="change">{{JSON.stringify(data)}}</p>
+    <p @click="changeRef2">{{JSON.stringify(msg2)}}</p>
   </div>
 </body>
 <script>
-  const { ref, watch, onMounted, watchEffect } = Vue
+  const { ref, watch, onMounted, watchEffect, reactive } = Vue
   var App = {
     data() {
       return {
@@ -30,8 +32,12 @@
     setup() {
       const msg = ref('msg from setup')
       const count = ref(0)
+      const data = reactive([1,2,3])
+      const msg2 = ref([1,2,3])
       const add = () => {
-        count.value++
+        for(let i = 0; i <10;i++){
+          count.value++
+        }
       }
       const initCount = () => {
         count.value = 100
@@ -53,11 +59,18 @@
         }) // 我们在Promise解析之前注册清除函数
         // data.value = await fetchData(props.id)
       })
-
+      const change = () => {
+        Object.assign(data, [444])
+      }
+      const changeRef2 = () => msg2.value = [444]
       return {
         msg,
         count,
-        add
+        add,
+        change,
+        data,
+        changeRef2,
+        msg2
       }
     },
     methods: {
