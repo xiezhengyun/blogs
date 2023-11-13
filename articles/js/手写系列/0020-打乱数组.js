@@ -18,4 +18,21 @@ function shuffle(arr) {
 
     insertPos++;
   }
+  return arr
+}
+console.log(shuffle([1,2,3,4,5,6,7]))
+console.log(randomSort([1,2,3,4,5,6,7]))
+
+function randomSort(array) {
+  let length = array.length;
+
+  if (!Array.isArray(array) || length <= 1) return;
+
+  for (let index = 0; index < length - 1; index++) {
+    let randomIndex = Math.floor(Math.random() * (length - index)) + index;
+
+    [array[index], array[randomIndex]] = [array[randomIndex], array[index]];
+  }
+
+  return array;
 }
