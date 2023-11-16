@@ -91,3 +91,11 @@ function updateMemoComponent() {
 - forceUpdate。类组件更新如果调用的是 forceUpdate 而不是 setState ，会跳过 PureComponent 的浅比较和 shouldComponentUpdate 自定义比较。其原理是组件中调用 forceUpdate 时候，全局会开启一个 hasForceUpdate 的开关。当组件更新的时候，检查这个开关是否打开，如果打开，就直接跳过 shouldUpdate 。
 
 - context穿透，上述的几种方式，都不能本质上阻断 context 改变，而带来的渲染穿透，所以开发者在使用 Context 要格外小心，既然选择了消费 context ，就要承担 context 改变，带来的更新作用。
+
+
+## 注意的点
+
+- 如果你想将内联函数中的 props 提取到useCallback中的原因是为了避免子组件re-render，那么不要这样做,它不会起作用
+- 如果组件使用了状态，找到那些不依赖于其他状态的组件，并对它们进行memo（useMemo）缓存，以最小化re-render次数。
+- 永远不要在另一个组件的渲染函数中创建新的组件
+- 在使用Context时，确保如果 value 属性不是数字、字符串或布尔值，则始终使用 memo缓存
