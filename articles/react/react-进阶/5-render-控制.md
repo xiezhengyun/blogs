@@ -1,3 +1,9 @@
+## 什么时候会render
+
+- 当组件的状态改变时
+- 当父组件re-render时
+- 当一个组件使用Context，并且Provider的值发生变化时
+
 ## 控制 render
 
 React 提供了几种控制 render 的方式, 究其本质主要是有 2 种方式
