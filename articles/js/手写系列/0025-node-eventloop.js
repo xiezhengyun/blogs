@@ -74,3 +74,31 @@ test()
 // children3
 // children3-1
 // setImmediate
+
+
+/**
+ * setTimeout 和 setImmediate
+ * 二者非常相似，区别主要在于调用时机不同。
+ * setImmediate 设计在poll阶段完成时执行，即check阶段；
+ * setTimeout 设计在poll阶段为空闲时，且设定时间到达后执行，但它在timer阶段执行
+ * 
+ * 首先 setTimeout(fn, 0) === setTimeout(fn, 1)，这是由源码决定的
+  进入事件循环也是需要成本的，如果在准备时候花费了大于 1ms 的时间，那么在 timer 阶段就会直接执行 setTimeout 回调
+  如果准备时间花费小于 1ms，那么就是 setImmediate 回调先执行了
+
+  但当二者在异步i/o callback内部调用时，总是先执行setImmediate，再执行setTimeout
+
+  const fs = require('fs')
+  fs.readFile(__filename, () => {
+      setTimeout(() => {
+          console.log('timeout');
+      }, 0)
+      setImmediate(() => {
+          console.log('immediate')
+      })
+  })
+  // immediate
+  // timeout
+ */
+
+  
