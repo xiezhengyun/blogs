@@ -48,6 +48,9 @@ Cache-Control 是用于页面缓存的通用消息头字段，可以通过指定
 - no-cache 强制客户端向服务器发起请求（禁用强缓存，可用协商缓存）。
 - no-store 禁止一切缓存，包含协商缓存也不可用。
 
+### Pragma
+Pragma 只有一个属性值，就是 no-cache ，效果和 Cache-Control 中的 no-cache 一致，不使用强缓存，需要与服务器验证缓存是否新鲜，在 3 个头部属性中的优先级最高
+
 ## 协商缓存
 
 ### ETag / If-None-Match
