@@ -21,6 +21,7 @@ export type Fiber = {
   flags: Flags, // 标识当前 Fiber 节点是否有副作用
 }
 ```
+Hook数据结构中和fiber数据结构中都有memoizedState字段，但是表达的意义不同，Hook中是作为缓存的state值，但是fiber中是指向的当前fiber下的hooks队列的首个hook（hook是链表结构，指向首个，就意味着可以访问整个hooks队列）
 
 ## Hooks 如何与 Fiber 共同工作
 
