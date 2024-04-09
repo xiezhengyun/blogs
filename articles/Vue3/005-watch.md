@@ -201,6 +201,10 @@ function watch(source, cb, options = {}) {
 
 watch 函数的回调函数接收第三个参数. onInvalidate，它是一个函数，类似于事件监听器，我们可以使用. onInvalidate 函数注册一个回调，这个回调函数会在当前副作用函数过期时执行.
 
+2次请求，expiredA，expiredB
+
+第二次的回调函数执行之前，会优先执行之前注册过的过期回调。把expiredA的值置为true，等第一次的结果返回，这个结果会被抛弃，避免了过期的副作用带来的问题。
+
 ```js
 let finalData
 watch(obj, async (newValue, oldValue, onInvalidate) => {
