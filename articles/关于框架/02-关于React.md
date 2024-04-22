@@ -49,7 +49,7 @@ JS脚本执行 -----  样式布局 ----- 样式绘制
 
 ### Reconciler（协调器) 的致命缺点， 递归更新
 
-在`Reconciler`中，`mount`的组件会调用`mountComponent`，`update`的组件会调用`updateComponent`。这两个方法都会递归更新子组件。
+在 `Reconciler`中，`mount`的组件会调用 `mountComponent`，`update`的组件会调用 `updateComponent`。这两个方法都会递归更新子组件。
 
 **由于递归执行，所以更新一旦开始，中途就无法中断。当层级很深时，递归更新时间超过了 16ms，用户交互就会卡顿。**
 
@@ -57,10 +57,10 @@ JS脚本执行 -----  样式布局 ----- 样式绘制
 
 React16 架构可以分为三层：
 
-- `Scheduler`（调度器）—— 调度任务的优先级，高优任务优先进入`Reconciler`
+- `Scheduler`（调度器）—— 调度任务的优先级，高优任务优先进入 `Reconciler`
 - `Reconciler`（协调器）—— 负责找出变化的组件
 - `Renderer`（渲染器）—— 负责将变化的组件渲染到页面上
-  可以看到，相较于 React15，React16 中新增了`Scheduler`（调度器）
+  可以看到，相较于 React15，React16 中新增了 `Scheduler`（调度器）
 
 ### Scheduler（调度器）
 
@@ -84,15 +84,15 @@ function workLoopConcurrent() {
 }
 ```
 
-- 解决中断更新时 DOM 渲染不完全:  
+- 解决中断更新时 DOM 渲染不完全:
   Reconciler 与 Renderer 不再是交替工作。当 Scheduler 将任务交给 Reconciler 后，Reconciler 会为变化的虚拟 DOM 打上代表增/删/更新的标记,
   **整个 Scheduler 与 Reconciler 的工作都在内存中进行。只有当所有组件都完成 Reconciler 的工作，才会统一交给 Renderer。**
 
-这里面的实现 从`Stack Reconciler` 变成了 `Fiber Reconciler`
+这里面的实现 从 `Stack Reconciler` 变成了 `Fiber Reconciler`
 
 ## Fiber
 
-`Fiber` 其实指的是一种数据结构. 单个的`Fiber` 可以这么描述：
+`Fiber` 其实指的是一种数据结构. 单个的 `Fiber` 可以这么描述：
 
 ```js
 const fiber = {
@@ -106,11 +106,8 @@ const fiber = {
 Fiber 的关键特性如下：
 
 - 增量渲染（把渲染任务拆分成块，匀到多帧）
-
 - 更新时能够暂停，终止，复用渲染任务
-
 - 给不同类型的更新赋予优先级
-
 - 并发方面新的基础能力
 
 增量渲染用来解决掉帧的问题，渲染任务拆分之后，每次只做一小段，做完一段就把时间控制权交还给主线程，而不像之前长时间占用。这种策略叫做cooperative scheduling（合作式调度）.
@@ -127,6 +124,7 @@ Fiber Reconciler 每执行一段时间，都会将控制权交回给浏览器，
 ### Fiber 树
 
 `Fiber Reconciler` 在阶段一进行 `Diff` 计算的时候，会生成一棵 `Fiber` 树。这棵树是在 `Virtual DOM` 树的基础上增加额外的信息来生成的，它本质来说是一个链表。
+
 > fiber tree实际上是个单链表（Singly Linked List）树结构, [这里](https://github.com/facebook/react/blob/v16.2.0/packages/react-reconciler/src/ReactFiber.js#L91)
 
 ![](https://images.weserv.nl/?url=https://article.biliimg.com/bfs/article/168d59d08e93fcd2ed7afa5e888869a7f4383f60.png)
@@ -155,3 +153,17 @@ fiber
 Elements
     描述UI长什么样子（type, props）
 ```
+
+
+## setState
+
+setState 之后
+
+ `React`的架构，包含了 `Renderer`、`Scheduler`和 `Reconciler`三部分，然后具体说了每一部分大概是做什么，之后讲 `setState`其实就是触发组件的一次渲染过程，具体过程如下：
+
+1. `setState`会生成一份新的组件内状态数据并重新执行 `Reconciler`中的 `render`方法
+2. `render`方法会根据 `JSX`和最新的数据去创建一个新的 `fiber`节点树，每一个树节点的创建都是 `Reconciler`中的一个工作单元
+3. 所有的创建 `fiber`节点工作单元生成后，这些工作单元的执行和调度会由 `Scheduler`中的任务队列来执行
+4. 任务队列每次取出一个创建 `fiber`节点的任务执行，执行完成之后会调用浏览器的 `requestIdeCallback`方法来判断当前刷新帧剩余时间是否够执行下一个任务
+5. 如果时间够就执行下一个创建 `fiber`节点任务，不够的话就先将创建任务暂停，等下一个刷新帧继续执行
+6. 当所有的创建任务都执行完成之后，就生成了一棵新的 `fiber`节点树，之后就是通过新旧两棵树去做 `diff`算法获得要更新的树，后面的 `diff`和渲染部分这里就不多介绍了

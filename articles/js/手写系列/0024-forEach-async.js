@@ -20,6 +20,7 @@ async function test() {
     console.log(res)
   })
 }
+// test()
 
 // 顺序执行
 
@@ -29,30 +30,32 @@ async function asyncForEach(array, callback) {
     await callback(array[index], index, array)
   }
 }
-async function test() {
+async function test2() {
   var nums = await getNumbers()
   asyncForEach(nums, async x => {
     var res = await multi(x)
     console.log(res)
   })
 }
+// test2()
 
 // 2 for of
-async function test() {
+async function test3() {
   var nums = await getNumbers()
   for (let x of nums) {
     var res = await multi(x)
     console.log(res)
   }
 }
+test3()
 
-// 3 async for
-;(async function () {
-  var nums = await getNumbers()
+// // 3 async for
+// ;(async function () {
+//   var nums = await getNumbers()
 
-  for (let i = 0; i < nums.length; i += 1) {
-    var res = await multi(nums[i])
+//   for (let i = 0; i < nums.length; i += 1) {
+//     var res = await multi(nums[i])
 
-    console.log(res)
-  }
-})()
+//     console.log(res)
+//   }
+// })()

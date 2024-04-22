@@ -45,8 +45,7 @@ class Test {
 
 function selectionSort(arr) {
   for (let i = 0; i < arr.length; i++) {
-    let minIndex = i,
-      temp;
+    let minIndex = i;
     for (let j = i; j < arr.length; j++) {
       if (arr[j] - arr[minIndex] < 0) minIndex = j;
     }
@@ -54,12 +53,13 @@ function selectionSort(arr) {
   }
   return arr;
 }
-// console.log(selectionSort(arr));
+console.log(selectionSort([2,1]));
 
 // 插入排序
 // 假定一个数组长度n，从左边开始，取第i个数据，在[0, i-1]中移动它应该呆的位置
 // 从右边无序的区间，插入左边有序的区间，第i个元素，如果它比左边的数字小，那就把左边的数字右移一位
 // 复杂度 O(n^2), 但是越有序的数组越快，完全有序就是O(n)
+//[2,1]
 function insertionSort(arr) {
   for (let i = 1; i < arr.length; i++) {
     let temp = arr[i];
@@ -71,8 +71,9 @@ function insertionSort(arr) {
   }
   return arr;
 }
+console.log(insertionSort([2,1]))
 
 const a = new generateArr(10000).getRandomArr();
 const test = new Test(a);
 // test.run(selectionSort, 'selectionSort');
-test.run(insertionSort, 'insertionSort');
+// test.run(insertionSort, 'insertionSort');

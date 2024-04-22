@@ -7,7 +7,7 @@ function flat(arr, depth = 1) {
     : arr.slice();
 }
 
-function flat(arr, depth = 1) {
+function flat2(arr, depth = 1) {
   if (depth === 0) {
     return arr.slice();
   }
@@ -16,7 +16,7 @@ function flat(arr, depth = 1) {
   
   for (let i = 0; i < arr.length; i++) {
     if (Array.isArray(arr[i])) {
-      result = result.concat(flat(arr[i], depth - 1));
+      result = result.concat(flat2(arr[i], depth - 1));
     } else {
       result.push(arr[i]);
     }
@@ -25,12 +25,12 @@ function flat(arr, depth = 1) {
   return result;
 }
 
-console.log(flat([['first']], 3));
+console.log(flat2([['first']], 3));
 
 // 栈
-function flat(arr, depth = 1) {
+function flat3(arr, depth = 1) {
   const result = [];
-  const stack = [];
+  let stack = [];
 
   // for(let i in arr) stack.push([arr[i], depth])
   stack = arr.map(item => [item, depth]);
@@ -46,7 +46,7 @@ function flat(arr, depth = 1) {
 }
 const arr = [1, 2, 3, 4, [1, 2, 3, [1, 2, 3, [1, 2, 3]]], 5, 'string', { name: '12121' }];
 
-flat(arr);
+console.log(flat3(arr, 10));
 
 Array.prototype.flat2 = function (depth = 1) {
   let newArr = [...this];
